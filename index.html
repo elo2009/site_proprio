@@ -1,232 +1,155 @@
 <!DOCTYPE html>
-<html lang="pt-br" >
+<html lang="pt-br">
 <head>
-  <meta charset="UTF-8" />
-  <title>Você me ama? ❤️</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="UTF-8">
+  <title>Eu lhe amo P.T.S 💖</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap');
-
-    * {
-      box-sizing: border-box;
-    }
-
+    /* Fundo com animação */
     body {
       margin: 0;
-      height: 100vh;
-      background: linear-gradient(135deg, #8ee7f7 0%, #5ddaf0 100%);
-      font-family: 'Poppins', sans-serif;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
       overflow: hidden;
-      color: #ffffff;
-      user-select: none;
-      position: relative;
+      background: radial-gradient(ellipse at bottom, #87b1e9 0%, #b0cbf0 100%);
+      font-family: 'Segoe UI', sans-serif;
+      color: #fff;
+      height: 100vh;
     }
 
-    /* Canvas do fundo (partículas) */
-    #backgroundCanvas {
+    .stars, .hearts {
       position: fixed;
       top: 0;
       left: 0;
-      width: 100vw;
-      height: 100vh;
-      z-index: 0;
+      width: 100%;
+      height: 100%;
       pointer-events: none;
+      z-index: 1;
     }
 
-    h1 {
-      font-size: 3.5rem;
-      margin-bottom: 60px;
-      text-shadow: 0 0 15px rgba(255, 255, 255, 0.7);
+    .star, .heart {
+      position: absolute;
+      color: rgba(255, 255, 255, 0.8);
+      animation: float 10s infinite linear;
+    }
+
+    .heart {
+      color: rgba(255, 105, 180, 0.7);
+      font-size: 24px;
+      animation-duration: 8s;
+    }
+
+    @keyframes float {
+      0% {
+        transform: translateY(100vh) translateX(0);
+        opacity: 0;
+      }
+      50% {
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-10vh) translateX(20px);
+        opacity: 0;
+      }
+    }
+
+    .card {
       position: relative;
-      z-index: 10;
+      z-index: 2;
+      background: rgba(255, 255, 255, 0.2);
+      border: 2px solid #fff;
+      border-radius: 20px;
+      padding: 40px 30px;
+      max-width: 500px;
+      margin: 100px auto;
+      text-align: center;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
     }
 
-    .btn-container {
-      position: relative;
-      width: 320px;
-      height: 60px;
-      display: flex;
-      justify-content: center;
-      gap: 40px;
-      z-index: 10;
+    .card h1 {
+      font-size: 2.5em;
+      margin-bottom: 20px;
+      color: #fff;
     }
 
-    button {
-      border: none;
-      cursor: pointer;
-      font-weight: 600;
-      font-size: 1.4rem;
-      padding: 18px 45px;
-      border-radius: 50px;
-      box-shadow: 0 8px 15px rgba(0,0,0,0.2);
-      transition: all 0.3s ease;
-      position: relative;
-      user-select: none;
-      z-index: 10;
+    .message {
+      font-size: 1.3em;
+      min-height: 80px;
+      white-space: pre-wrap;
     }
 
-    #sim {
-      background: #00d084;
-      color: rgb(255, 255, 255);
-      box-shadow: 0 8px 15px rgba(0, 208, 132, 0.6);
-      position: static;
-      margin-right: 20px;
-    }
-
-    #sim:hover {
-      background: #5ae0a9;
-      box-shadow: 0 15px 20px rgba(0, 0, 0, 0.8);
-      transform: translateY(-5px) scale(1.05);
-      text-shadow: 0 0 10px #00ffc7;
-    }
-
-    #nao {
-      background: #b8113a;
+    .button {
+      margin-top: 30px;
+      padding: 12px 24px;
+      font-size: 1em;
+      background: #ff66b2;
       color: white;
-      position: fixed;
-      top: calc(50% + 40px);
-      left: calc(50% + 160px);
-      box-shadow: 0 8px 15px rgba(255, 51, 102, 0.6);
-      font-size: 1.2rem;
-      padding: 15px 35px;
-      transition: background 0.2s ease, top 0.4s ease, left 0.4s ease;
-      z-index: 20;
-      user-select: none;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.3s ease;
     }
 
-    #nao:hover {
-      background: #e62e5c;
-    }
-
-    .response {
-      margin-top: 50px;
-      font-size: 2rem;
-      font-weight: 700;
-      text-shadow: 0 0 10px rgba(255,255,255,0.8);
-      min-height: 3rem;
-      user-select: none;
-      position: relative;
-      z-index: 10;
+    .button:hover {
+      background: #cc0066;
     }
   </style>
 </head>
 <body>
-  <canvas id="backgroundCanvas"></canvas>
 
-  <h1>Você me ama?</h1>
+  <!-- Animações no fundo -->
+  <div class="stars" id="stars"></div>
+  <div class="hearts" id="hearts"></div>
 
-  <div class="btn-container">
-    <button id="sim">Sim 💚</button>
-
-    <button id="nao">Não 💔</button>
+  <!-- Cartão com efeito de máquina de escrever -->
+  <div class="card">
+    <h1>Eu lhe amo P.T.S  🥺🌹</h1>
+    <p class="message" id="mensagem"></p>
+    <button class="button" onclick="replayMensagem()">Ver de Novo 💌</button>
+    <audio id="musica" autoplay loop>
+      <source src="https://www.bensound.com/bensound-music/bensound-love.mp3" type="audio/mpeg">
+    </audio>
   </div>
 
-  <div class="response" id="resposta"></div>
-
   <script>
-    // Movimento botão "Não"
-    const btnNao = document.getElementById("nao");
-    const resposta = document.getElementById("resposta");
+    const mensagem = `Eu te amo o tanto quanto eu amo tortas de cookie com nutela ou
+     strogonoff com bastante batata palha e gatinhos filhotes😿`;
 
-    function posicionarInicial() {
-      const centerX = window.innerWidth / 2 + 160;
-      const centerY = window.innerHeight / 2 + 40;
-      btnNao.style.left = `${centerX}px`;
-      btnNao.style.top = `${centerY}px`;
-    }
-    posicionarInicial();
+    let i = 0;
+    const el = document.getElementById("mensagem");
 
-    btnNao.addEventListener("mouseenter", () => {
-      const btnWidth = btnNao.offsetWidth;
-      const btnHeight = btnNao.offsetHeight;
-      const padding = 20; 
-
-      const maxX = window.innerWidth - btnWidth - padding;
-      const maxY = window.innerHeight - btnHeight - padding;
-
-      const newX = Math.random() * maxX;
-      const newY = Math.random() * maxY;
-
-      btnNao.style.left = `${newX}px`;
-      btnNao.style.top = `${newY}px`;
-    });
-
-    document.getElementById("sim").addEventListener("click", () => {
-      resposta.textContent = "Também lhe amo meu amor!";
-    });
-
-    window.addEventListener('resize', () => {
-      posicionarInicial();
-      initParticles();
-    });
-
-    // ===== Fundo de partículas =====
-    const canvas = document.getElementById('backgroundCanvas');
-    const ctx = canvas.getContext('2d');
-
-    let particlesArray = [];
-    const maxParticles = 100;
-
-    // Ajusta tamanho do canvas
-    function resizeCanvas() {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    }
-    resizeCanvas();
-
-    // Classe partícula
-    class Particle {
-      constructor() {
-        this.x = Math.random() * canvas.width;
-        this.y = Math.random() * canvas.height;
-        this.size = Math.random() * 2 + 1;
-        this.speedX = (Math.random() - 0.5) * 0.5;
-        this.speedY = (Math.random() - 0.5) * 0.5;
-        this.opacity = Math.random() * 0.5 + 0.3;
-      }
-      update() {
-        this.x += this.speedX;
-        this.y += this.speedY;
-
-        // Reposicionar se sair da tela
-        if (this.x < 0) this.x = canvas.width;
-        if (this.x > canvas.width) this.x = 0;
-        if (this.y < 0) this.y = canvas.height;
-        if (this.y > canvas.height) this.y = 0;
-      }
-      draw() {
-        ctx.beginPath();
-        ctx.fillStyle = `rgba(255, 255, 255, ${this.opacity})`;
-        ctx.shadowColor = 'rgba(255, 255, 255, 0.7)';
-        ctx.shadowBlur = 5;
-        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-        ctx.fill();
+    function escrever() {
+      if (i < mensagem.length) {
+        el.innerHTML += mensagem.charAt(i);
+        i++;
+        setTimeout(escrever, 50);
       }
     }
 
-    // Inicializa partículas
-    function initParticles() {
-      particlesArray = [];
-      for (let i = 0; i < maxParticles; i++) {
-        particlesArray.push(new Particle());
+    function replayMensagem() {
+      el.innerHTML = "";
+      i = 0;
+      escrever();
+    }
+
+    escrever();
+
+    // Estrelas e corações flutuantes
+    function criarElementos(tipo, container, total) {
+      for (let i = 0; i < total; i++) {
+        const elem = document.createElement("span");
+        elem.className = tipo;
+        elem.innerHTML = tipo === "heart" ? "💕" : "✨";
+        elem.style.left = Math.random() * 100 + "vw";
+        elem.style.top = Math.random() * 100 + "vh";
+        elem.style.fontSize = (Math.random() * 20 + 10) + "px";
+        elem.style.animationDelay = (Math.random() * 10) + "s";
+        container.appendChild(elem);
       }
     }
-    initParticles();
 
-    // Animação
-    function animate() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      particlesArray.forEach(p => {
-        p.update();
-        p.draw();
-      });
-      requestAnimationFrame(animate);
-    }
-    animate();
+    criarElementos("star", document.getElementById("stars"), 50);
+    criarElementos("heart", document.getElementById("hearts"), 30);
   </script>
+
 </body>
 </html>
